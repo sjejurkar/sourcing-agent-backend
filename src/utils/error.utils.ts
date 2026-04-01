@@ -1,0 +1,16 @@
+export class AppError extends Error {
+  constructor(
+    message: string,
+    public statusCode: number = 500,
+    public code?: string,
+    public details?: unknown,
+  ) {
+    super(message);
+    this.name = this.constructor.name;
+    Error.captureStackTrace(this, this.constructor);
+  }
+}
+
+export const isAppError = (error: unknown): error is AppError => {
+  return error instanceof AppError;
+};

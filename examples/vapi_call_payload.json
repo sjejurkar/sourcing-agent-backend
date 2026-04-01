@@ -1,0 +1,17 @@
+{
+  "assistantId": "f8887ac9-58bd-46a8-82c2-32b7b1c8fcc1",
+  "phoneNumberId": "063f50d9-f9a3-4d63-b4c4-8430d0b659b6",
+  "customer": {
+    "name": "Sam",
+    "number": "+1469-888-9840"
+  },
+  "assistantOverrides": {
+    "variableValues": {
+      "vendor_name": "ABC Industrial Supply",
+        "phone": "+12145551234",
+        "part_number": "ABC-123",
+        "quantity_needed": 50,
+        "due_date": "2026-04-10"
+    }
+  }
+}
