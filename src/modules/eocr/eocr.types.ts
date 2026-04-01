@@ -8,5 +8,6 @@ export interface ExtractedEOCRData {
   deliveryDate: string | null;
   substitutePartNumber: string | null;
   substituteAvailability: boolean | null;
+  substitutePartQuantity: number | null;
   substituteDeliveryDate: string | null;
 }

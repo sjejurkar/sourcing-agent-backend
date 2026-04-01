@@ -17,13 +17,19 @@ export interface VapiCallResponse {
   // Add other fields based on actual Vapi API response
 }
 
+export interface VapiStructuredOutput {
+  name: string;
+  result: string | number | boolean | null;
+  compliancePlan: null | unknown;
+}
+
 export interface VapiEOCR {
   call: {
     id: string;
     status: string;
     // Add other call fields from Vapi documentation
   };
-  structuredData?: Record<string, unknown>;
+  structuredOutputs?: Record<string, VapiStructuredOutput>;
   transcript?: string;
   // Add other fields based on actual Vapi EOCR structure
 }

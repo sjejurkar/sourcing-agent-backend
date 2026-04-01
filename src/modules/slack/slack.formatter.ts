@@ -37,6 +37,10 @@ export const formatEOCRForSlack = (
       message += `*Substitute Available:* ${data.substituteAvailability ? 'Yes' : 'No'}\n`;
     }
 
+    if (data.substitutePartQuantity !== null) {
+      message += `*Substitute Qty Available:* ${data.substitutePartQuantity}\n`;
+    }
+
     if (data.substituteDeliveryDate) {
       message += `*Substitute Delivery:* ${formatDateForSlack(data.substituteDeliveryDate)}\n`;
     }
