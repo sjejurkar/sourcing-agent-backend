@@ -142,15 +142,28 @@ Receives End-Of-Call Reports from Vapi.
 
 ### EOCR Data Extraction
 
-Extract these structured fields from EOCR JSON:
-- `vendor_contact_reached` (boolean)
-- `contact_name` (string)
-- `availability_status` (enum: Available, Not Available, Partial)
-- `quantity_available` (number)
-- `delivery_date` (date)
+**Vapi EOCR Structure**: The actual webhook payload has structured outputs nested at `message.artifact.structuredOutputs`, with GUID-keyed objects containing `name` and `result` fields.
+
+**Vapi Field Names** (extracted from structuredOutputs):
+- `part_contact_name` (string) - contact person's name
+- `part_availability_status` (string) - values: `in_stock`, `out_of_stock`, `partial`, `substitute_offered`, `unknown`
+- `part_quantity_available` (number) - quantity in stock
+- `part_delivery_date` (string) - can be a date like "2026-04-10" OR text like "immediately", "next week"
 - `substitute_part_number` (string) - optional
-- `substitute_availability` (boolean) - optional
-- `substitute_delivery_date` (date) - optional
+- `substitute_availability` (boolean/string) - optional
+- `substitute_part_quantity` (number) - optional
+- `substitute_delivery_date` (string) - optional, can be date or text
+
+**Internal Mapped Fields** (for our application):
+- `vendorContactReached` (boolean) - inferred from presence of part_contact_name
+- `contactName` (string | null)
+- `availabilityStatus` (enum: Available, Not Available, Partial) - mapped from Vapi status values
+- `quantityAvailable` (number | null)
+- `deliveryDate` (string | null) - preserved as-is, may be date or text
+- `substitutePartNumber` (string | null)
+- `substituteAvailability` (boolean | null)
+- `substitutePartQuantity` (number | null)
+- `substituteDeliveryDate` (string | null) - preserved as-is, may be date or text
 
 **Handle partial data gracefully**: Send Slack notifications even with incomplete data rather than failing.
 
@@ -191,7 +204,32 @@ Use structured logging (Pino recommended) for easier parsing and analysis.
 
 - **Purpose**: Receive End-Of-Call Reports
 - **Security**: Webhook signature validation required
-- **Payload**: EOCR JSON with call transcript and structured outputs
+- **Payload Structure**: EOCR JSON with nested structure:
+  ```json
+  {
+    "message": {
+      "type": "end-of-call-report",
+      "timestamp": 1775084045575,
+      "artifact": {
+        "messages": [...],
+        "structuredOutputs": {
+          "<guid>": {
+            "name": "part_contact_name",
+            "result": "John Smith",
+            "compliancePlan": null
+          },
+          "<guid>": {
+            "name": "part_availability_status",
+            "result": "in_stock",
+            "compliancePlan": null
+          }
+          // ... more structured outputs
+        }
+      }
+    }
+  }
+  ```
+- **Note**: Access structured data via `message.artifact.structuredOutputs`, not at root level
 
 ### Slack Incoming Webhooks
 
