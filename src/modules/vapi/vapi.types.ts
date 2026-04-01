@@ -24,12 +24,19 @@ export interface VapiStructuredOutput {
 }
 
 export interface VapiEOCR {
-  call: {
-    id: string;
-    status: string;
-    // Add other call fields from Vapi documentation
+  message: {
+    type: string;
+    timestamp: number;
+    artifact?: {
+      messages?: any[];
+      structuredOutputs?: Record<string, VapiStructuredOutput>;
+      [key: string]: any;
+    };
+    call?: {
+      id: string;
+      status: string;
+      // Add other call fields from Vapi documentation
+    };
+    [key: string]: any;
   };
-  structuredOutputs?: Record<string, VapiStructuredOutput>;
-  transcript?: string;
-  // Add other fields based on actual Vapi EOCR structure
 }

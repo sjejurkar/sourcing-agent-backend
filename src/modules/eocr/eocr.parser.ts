@@ -43,8 +43,9 @@ export const parseEOCR = (eocr: VapiEOCR, requestId: string): ExtractedEOCRData 
 
   try {
     // Convert GUID-keyed structuredOutputs to name-value map
-    const outputs = eocr.structuredOutputs
-      ? convertStructuredOutputs(eocr.structuredOutputs)
+    const structuredOutputs = eocr.message?.artifact?.structuredOutputs;
+    const outputs = structuredOutputs
+      ? convertStructuredOutputs(structuredOutputs)
       : {};
 
     log.debug({ rawOutputs: outputs }, 'Converted structured outputs');
