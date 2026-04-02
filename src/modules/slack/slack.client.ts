@@ -25,7 +25,7 @@ class SlackClient {
         stack: error.stack,
       };
       log.error({ error: errorDetails }, 'Failed to send Slack notification');
-      throw error; // Throw to surface the actual error
+      // Don't throw - log the error but don't fail the webhook response to Vapi
     }
   }
 }

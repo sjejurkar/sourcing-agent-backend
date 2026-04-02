@@ -13,12 +13,10 @@ export const handleEOCR = async (
 
     log.info({ eocr: req.body }, 'Received EOCR webhook');
 
-    // Process EOCR (fire-and-forget style)
-    eocrService.processEOCR(req.body, requestId).catch((error) => {
-      log.error({ error, stack: error.stack }, 'Error processing EOCR in background');
-    });
+    // Process EOCR and wait for completion (required for serverless environments)
+    await eocrService.processEOCR(req.body, requestId);
 
-    // Return 200 immediately to Vapi
+    // Return 200 to Vapi after processing completes
     res.status(200).json({ status: 'received' });
   } catch (error) {
     next(error);
