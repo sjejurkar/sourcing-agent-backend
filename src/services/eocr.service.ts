@@ -9,16 +9,11 @@ class EOCRService {
     const log = logger.child({ requestId, operation: 'eocrService.processEOCR' });
 
     try {
-      // Parse EOCR
+      // Parse EOCR (includes variableValues and structuredOutputs)
       const extractedData = parseEOCR(eocr, requestId);
 
-      // Extract vendor_name and part_number from EOCR variables or assistant overrides
-      // This depends on Vapi's actual EOCR structure - adjust based on documentation
-      const vendorName = (eocr as any).variables?.vendor_name || 'Unknown Vendor';
-      const partNumber = (eocr as any).variables?.part_number || 'Unknown Part';
-
-      // Format Slack message
-      const slackMessage = formatEOCRForSlack(extractedData, vendorName, partNumber);
+      // Format Slack message (data now includes vendor_name and part_number from variableValues)
+      const slackMessage = formatEOCRForSlack(extractedData);
 
       // Send Slack notification
       await slackClient.sendMessage(slackMessage, requestId);

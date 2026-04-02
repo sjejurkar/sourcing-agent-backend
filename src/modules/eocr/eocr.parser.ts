@@ -42,6 +42,10 @@ export const parseEOCR = (eocr: VapiEOCR, requestId: string): ExtractedEOCRData 
   const log = logger.child({ requestId, operation: 'eocr.parse' });
 
   try {
+    // Extract variableValues (request context)
+    const variableValues = eocr.message?.assistant?.variableValues || {};
+    log.debug({ variableValues }, 'Extracted variable values');
+
     // Convert GUID-keyed structuredOutputs to name-value map
     const structuredOutputs = eocr.message?.artifact?.structuredOutputs;
     const outputs = structuredOutputs
@@ -51,7 +55,15 @@ export const parseEOCR = (eocr: VapiEOCR, requestId: string): ExtractedEOCRData 
     log.debug({ rawOutputs: outputs }, 'Converted structured outputs');
 
     const extracted: ExtractedEOCRData = {
-      // Infer contact was reached if we have part_contact_name
+      // Request context (from variableValues)
+      vendorName: (variableValues.vendor_name as string) || null,
+      partNumber: (variableValues.part_number as string) || null,
+      quantityNeeded: typeof variableValues.quantity_needed === 'number'
+        ? variableValues.quantity_needed
+        : null,
+      dueDate: (variableValues.due_date as string) || null,
+
+      // Call outcome (from structuredOutputs)
       vendorContactReached: Boolean(outputs.part_contact_name),
       contactName: (outputs.part_contact_name as string) || null,
       availabilityStatus: mapAvailabilityStatus(outputs.part_availability_status as string),

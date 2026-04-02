@@ -37,6 +37,16 @@ export interface VapiEOCR {
       status: string;
       // Add other call fields from Vapi documentation
     };
+    assistant?: {
+      variableValues?: {
+        vendor_name?: string;
+        part_number?: string;
+        quantity_needed?: number;
+        due_date?: string;
+        [key: string]: any;
+      };
+      [key: string]: any;
+    };
     [key: string]: any;
   };
 }

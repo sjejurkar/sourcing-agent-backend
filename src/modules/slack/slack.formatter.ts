@@ -4,8 +4,6 @@ import { SlackMessage } from './slack.types';
 
 export const formatEOCRForSlack = (
   data: ExtractedEOCRData,
-  vendorName: string,
-  partNumber: string,
 ): SlackMessage => {
   const blocks: any[] = [
     // Header section
@@ -20,7 +18,7 @@ export const formatEOCRForSlack = (
     {
       type: 'section',
       fields: [
-        { type: 'mrkdwn', text: `*Vendor:*\n${vendorName}` },
+        { type: 'mrkdwn', text: `*Vendor:*\n${data.vendorName || 'Unknown'}` },
         { type: 'mrkdwn', text: `*Contact Reached:*\n${data.vendorContactReached ? 'Yes' : 'No'}` },
       ],
     },
@@ -31,8 +29,20 @@ export const formatEOCRForSlack = (
     blocks[1].fields.push({ type: 'mrkdwn', text: `*Contact Name:*\n${data.contactName}` });
   }
 
-  // Add part number
-  blocks[1].fields.push({ type: 'mrkdwn', text: `*Part Number:*\n${partNumber}` });
+  // Add part number if available
+  if (data.partNumber) {
+    blocks[1].fields.push({ type: 'mrkdwn', text: `*Part Number:*\n${data.partNumber}` });
+  }
+
+  // Add quantity needed if available
+  if (data.quantityNeeded !== null) {
+    blocks[1].fields.push({ type: 'mrkdwn', text: `*Qty Needed:*\n${data.quantityNeeded}` });
+  }
+
+  // Add due date if available
+  if (data.dueDate) {
+    blocks[1].fields.push({ type: 'mrkdwn', text: `*Due Date:*\n${formatDateForSlack(data.dueDate)}` });
+  }
 
   // Add availability if available
   if (data.availabilityStatus) {
