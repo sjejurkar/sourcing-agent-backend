@@ -10,15 +10,22 @@ class SlackClient {
     log.info({ message }, 'Sending Slack notification');
 
     try {
-      await axios.post(config.slack.webhookUrl, message, {
+      const response = await axios.post(config.slack.webhookUrl, message, {
         headers: { 'Content-Type': 'application/json' },
         timeout: 10000,
       });
 
-      log.info('Slack notification sent successfully');
-    } catch (error) {
-      log.error({ error }, 'Failed to send Slack notification');
-      // Don't throw - log the error but don't fail the main flow
+      log.info({ statusCode: response.status, responseData: response.data }, 'Slack notification sent successfully');
+    } catch (error: any) {
+      const errorDetails = {
+        message: error.message,
+        code: error.code,
+        response: error.response?.data,
+        status: error.response?.status,
+        stack: error.stack,
+      };
+      log.error({ error: errorDetails }, 'Failed to send Slack notification');
+      throw error; // Throw to surface the actual error
     }
   }
 }

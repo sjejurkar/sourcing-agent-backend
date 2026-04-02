@@ -7,9 +7,9 @@ import { errorHandler } from './api/middleware/error.middleware';
 export const createApp = (): Application => {
   const app = express();
 
-  // Body parsing
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
+  // Body parsing (increased limit for EOCR payloads)
+  app.use(express.json({ limit: '500kb' }));
+  app.use(express.urlencoded({ extended: true, limit: '500kb' }));
 
   // Request logging
   app.use(requestLogger);

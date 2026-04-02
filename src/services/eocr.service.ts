@@ -8,15 +8,20 @@ class EOCRService {
   async processEOCR(eocr: VapiEOCR, requestId: string): Promise<void> {
     const log = logger.child({ requestId, operation: 'eocrService.processEOCR' });
 
+    log.info('Starting EOCR processing');
+
     try {
       // Parse EOCR (includes variableValues and structuredOutputs)
       const extractedData = parseEOCR(eocr, requestId);
+      log.info({ extractedData }, 'EOCR data extracted, formatting for Slack');
 
       // Format Slack message (data now includes vendor_name and part_number from variableValues)
       const slackMessage = formatEOCRForSlack(extractedData);
+      log.info({ slackMessage }, 'Slack message formatted, sending to Slack');
 
       // Send Slack notification
       await slackClient.sendMessage(slackMessage, requestId);
+      log.info('Slack message sent successfully');
 
       log.info('EOCR processed successfully');
     } catch (error) {

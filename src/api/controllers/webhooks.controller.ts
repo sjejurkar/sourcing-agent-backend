@@ -15,7 +15,7 @@ export const handleEOCR = async (
 
     // Process EOCR (fire-and-forget style)
     eocrService.processEOCR(req.body, requestId).catch((error) => {
-      log.error({ error }, 'Error processing EOCR');
+      log.error({ error, stack: error.stack }, 'Error processing EOCR in background');
     });
 
     // Return 200 immediately to Vapi
