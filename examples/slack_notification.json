@@ -1,0 +1,48 @@
+{
+    "text": "Vendor Call Completed",
+    "blocks": [
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "*📞 Vendor Call Completed*"
+            }
+        },
+        {
+            "type": "section",
+            "fields": [
+                {
+                    "type": "mrkdwn",
+                    "text": "*Vendor:*\nABC Industrial Supply"
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": "*Contact Reached:*\nYes"
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": "*Contact Name:*\nMike Johnson"
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": "*Availability:*\nPartial"
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": "*Qty Available:*\n30"
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": "*Delivery Date:*\nApr 8, 2026"
+                }
+            ]
+        },
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "*Substitute Part:* ABC-123X\n*Substitute Available:* Yes\n*Sub Delivery:* Apr 6, 2026"
+            }
+        }
+    ]
+}

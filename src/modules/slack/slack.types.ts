@@ -9,5 +9,8 @@ export interface SlackBlock {
     type: string;
     text: string;
   };
-  // Add other block types as needed
+  fields?: Array<{
+    type: string;
+    text: string;
+  }>;
 }

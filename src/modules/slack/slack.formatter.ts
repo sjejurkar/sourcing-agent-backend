@@ -7,44 +7,75 @@ export const formatEOCRForSlack = (
   vendorName: string,
   partNumber: string,
 ): SlackMessage => {
-  let message = `📞 *Vendor Call Completed*\n\n`;
-  message += `*Vendor:* ${vendorName}\n`;
-  message += `*Contact Reached:* ${data.vendorContactReached ? 'Yes' : 'No'}\n`;
+  const blocks: any[] = [
+    // Header section
+    {
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: '*📞 Vendor Call Completed*',
+      },
+    },
+    // Vendor details section
+    {
+      type: 'section',
+      fields: [
+        { type: 'mrkdwn', text: `*Vendor:*\n${vendorName}` },
+        { type: 'mrkdwn', text: `*Contact Reached:*\n${data.vendorContactReached ? 'Yes' : 'No'}` },
+      ],
+    },
+  ];
 
+  // Add contact name if available
   if (data.contactName) {
-    message += `*Contact Name:* ${data.contactName}\n`;
+    blocks[1].fields.push({ type: 'mrkdwn', text: `*Contact Name:*\n${data.contactName}` });
   }
 
-  message += `\n*Part:* ${partNumber}\n`;
+  // Add part number
+  blocks[1].fields.push({ type: 'mrkdwn', text: `*Part Number:*\n${partNumber}` });
 
+  // Add availability if available
   if (data.availabilityStatus) {
-    message += `*Availability:* ${data.availabilityStatus}\n`;
+    blocks[1].fields.push({ type: 'mrkdwn', text: `*Availability:*\n${data.availabilityStatus}` });
   }
 
+  // Add quantity if available
   if (data.quantityAvailable !== null) {
-    message += `*Qty Available:* ${data.quantityAvailable}\n`;
+    blocks[1].fields.push({ type: 'mrkdwn', text: `*Qty Available:*\n${data.quantityAvailable}` });
   }
 
+  // Add delivery date if available
   if (data.deliveryDate) {
-    message += `*Delivery Date:* ${formatDateForSlack(data.deliveryDate)}\n`;
+    blocks[1].fields.push({ type: 'mrkdwn', text: `*Delivery Date:*\n${formatDateForSlack(data.deliveryDate)}` });
   }
 
   // Substitute part section
   if (data.substitutePartNumber) {
-    message += `\n*Substitute Part:* ${data.substitutePartNumber}\n`;
+    let substituteText = `*Substitute Part:* ${data.substitutePartNumber}`;
 
     if (data.substituteAvailability !== null) {
-      message += `*Substitute Available:* ${data.substituteAvailability ? 'Yes' : 'No'}\n`;
+      substituteText += `\n*Substitute Available:* ${data.substituteAvailability ? 'Yes' : 'No'}`;
     }
 
     if (data.substitutePartQuantity !== null) {
-      message += `*Substitute Qty Available:* ${data.substitutePartQuantity}\n`;
+      substituteText += `\n*Substitute Qty Available:* ${data.substitutePartQuantity}`;
     }
 
     if (data.substituteDeliveryDate) {
-      message += `*Substitute Delivery:* ${formatDateForSlack(data.substituteDeliveryDate)}\n`;
+      substituteText += `\n*Sub Delivery:* ${formatDateForSlack(data.substituteDeliveryDate)}`;
     }
+
+    blocks.push({
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: substituteText,
+      },
+    });
   }
 
-  return { text: message };
+  return {
+    text: 'Vendor Call Completed',
+    blocks,
+  };
 };
