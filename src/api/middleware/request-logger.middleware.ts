@@ -10,10 +10,13 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction): 
 
   const log = createLogger({ requestId });
 
+  // Log request details (skip body for webhooks - logged in handler for better control)
+  const isWebhook = req.path.includes('/webhooks/');
   log.info({
     method: req.method,
     path: req.path,
-    body: req.body,
+    bodySize: req.body ? JSON.stringify(req.body).length : 0,
+    ...(isWebhook ? {} : { body: req.body }),
   }, 'Incoming request');
 
   // Log response
