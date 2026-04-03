@@ -11,23 +11,23 @@ export const handleEOCR = async (
     const requestId = (req as any).requestId;
     const log = logger.child({ requestId });
 
-    // Log EOCR payload metadata (always visible in Vercel logs)
+    // Log EOCR webhook receipt
+    log.info('Received EOCR webhook');
+
+    // Log payload metadata as separate entry
     const payloadSize = JSON.stringify(req.body).length;
-    log.info({
-      payloadSize,
-      messageType: req.body?.message?.type,
-      timestamp: req.body?.message?.timestamp,
-      hasStructuredOutputs: !!req.body?.message?.artifact?.structuredOutputs,
-    }, 'Received EOCR webhook - metadata');
+    log.info(`EOCR metadata: size=${payloadSize} bytes, type=${req.body?.message?.type}, timestamp=${req.body?.message?.timestamp}`);
 
-    // Log full EOCR payload as JSON string (may be truncated in Vercel)
-    log.info({ eocrPayload: JSON.stringify(req.body, null, 2) }, 'EOCR full payload');
+    // Log full EOCR payload (use console.log for better Vercel visibility)
+    console.log('=== EOCR Full Payload ===');
+    console.log(JSON.stringify(req.body, null, 2));
+    console.log('=== End EOCR Payload ===');
 
-    // Log structured outputs keys separately for visibility
+    // Log structured outputs if present
     if (req.body?.message?.artifact?.structuredOutputs) {
       const structuredOutputs = req.body.message.artifact.structuredOutputs;
       const outputFields = Object.values(structuredOutputs).map((output: any) => output.name);
-      log.info({ structuredOutputFields: outputFields }, 'EOCR structured output fields');
+      log.info(`EOCR structured output fields: ${outputFields.join(', ')}`);
     }
 
     // Process EOCR and wait for completion (required for serverless environments)
