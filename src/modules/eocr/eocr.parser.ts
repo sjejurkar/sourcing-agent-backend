@@ -66,6 +66,7 @@ export const parseEOCR = (eocr: VapiEOCR, requestId: string): ExtractedEOCRData 
       // Call outcome (from structuredOutputs)
       vendorContactReached: Boolean(outputs.part_contact_name),
       contactName: (outputs.part_contact_name as string) || null,
+      callSummary: (outputs.call_summary as string) || null,
       availabilityStatus: mapAvailabilityStatus(outputs.part_availability_status as string),
       quantityAvailable: typeof outputs.part_quantity_available === 'number'
         ? outputs.part_quantity_available

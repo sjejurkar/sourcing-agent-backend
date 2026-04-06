@@ -54,9 +54,20 @@ export const formatEOCRForSlack = (
     blocks[1].fields.push({ type: 'mrkdwn', text: `*Qty Available:*\n${data.quantityAvailable}` });
   }
 
-  // Add delivery date if available
+  // Add delivery date if available (as-is, without date formatting)
   if (data.deliveryDate) {
-    blocks[1].fields.push({ type: 'mrkdwn', text: `*Delivery Date:*\n${formatDateForSlack(data.deliveryDate)}` });
+    blocks[1].fields.push({ type: 'mrkdwn', text: `*Delivery Date:*\n${data.deliveryDate}` });
+  }
+
+  // Add call summary section if available
+  if (data.callSummary) {
+    blocks.push({
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: `*📝 Call Summary*\n${data.callSummary}`,
+      },
+    });
   }
 
   // Substitute part section
@@ -72,7 +83,7 @@ export const formatEOCRForSlack = (
     }
 
     if (data.substituteDeliveryDate) {
-      substituteText += `\n*Sub Delivery:* ${formatDateForSlack(data.substituteDeliveryDate)}`;
+      substituteText += `\n*Sub Delivery:* ${data.substituteDeliveryDate}`;
     }
 
     blocks.push({

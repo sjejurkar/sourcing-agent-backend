@@ -10,6 +10,7 @@ export interface ExtractedEOCRData {
   // Call outcome (from structuredOutputs)
   vendorContactReached: boolean;
   contactName: string | null;
+  callSummary: string | null;
   availabilityStatus: AvailabilityStatus | null;
   quantityAvailable: number | null;
   deliveryDate: string | null;
